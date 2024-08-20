@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <style>
+      .invoice-box {
+        max-width: 1000px;
+        font-size: 16px;
+        padding-left: 30px;
+        padding-right: 30px;
+        line-height: 24px;
+        font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+        color: #555;
+      }
+
+      .invoice-box table {
+        width: 100%;
+        line-height: inherit;
+        text-align: left;
+      }
+
+      .invoice-box table td {
+        padding: 5px;
+        vertical-align: top;
+      }
+
+      .invoice-box table tr td:nth-child(2) {
+        text-align: right;
+      }
+
+      .invoice-box table tr.top table td {
+        padding-bottom: 20px;
+      }
+
+      .invoice-box table tr.top table td.title {
+        font-size: 45px;
+        line-height: 45px;
+        color: #333;
+      }
+
+      .invoice-box table tr.information table td {
+        padding-bottom: 40px;
+      }
+      .invoice-box table tr.heading td {
+        border-bottom: 1px solid #ddd;
+        width: 100%;
+        color: #eee;
+        border-left: 1px solid #666;
+      }
+      .invoice-box table tr.heading td:nth-child(1) {
+        padding-left: 1rem;
+        border-top-left-radius: 0.3rem;
+        border-bottom-left-radius: 0.3rem;
+      }
+
+      .invoice-box table tr.heading td:nth-child(2) {
+        text-align: center;
+      }
+      .invoice-box table tr.heading td:last-child {
+        border-top-right-radius: 0.3rem;
+        border-bottom-right-radius: 0.3rem;
+        text-align: right;
+        padding-right: 1rem;
+      }
+
+      .invoice-box table tr.details td {
+        padding-bottom: 20px;
+      }
+      .invoice-box table tr.item td:nth-child(1) {
+        padding-left: 1rem;
+        font-weight: bold;
+      }
+      .invoice-box table tr.item td:nth-child(2) {
+        text-align: center;
+      }
+      .invoice-box table tr.item td:last-child {
+        text-align: right;
+      }
+      .invoice-box table tr.item td {
+        border-bottom: 1px solid #eee;
+      }
+
+      .invoice-box table tr.item.last td {
+        border-bottom: none;
+      }
+
+      .invoice-box table tr.total td:nth-child(2) {
+        border-top: 2px solid #eee;
+        font-weight: bold;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .invoice-box table tr.top table td {
+          width: 100%;
+          display: block;
+          text-align: center;
+        }
+
+        .invoice-box table tr.information table td {
+          width: 100%;
+          display: block;
+          text-align: center;
+        }
+      }
+
+      /** RTL **/
+      .rtl {
+        direction: rtl;
+        font-family: Tahoma, "Helvetica Neue", "Helvetica", Helvetica, Arial,
+          sans-serif;
+      }
+
+      .rtl table {
+        text-align: right;
+      }
+
+      .rtl table tr td:nth-child(2) {
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-box">
+      <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+          <td colspan="4">
+            <table>
+              <tr>
+                <td class="title" style="width: 50%">
+                  {{#if fileNames}}
+                  <img
+                    src="{{imageSrc}}"
+                    alt="{{fileNames}}"
+                    style="
+                      max-width: 300px;
+                      max-height: 250px;
+                      object-fit: cover;
+                    "
+                  />
+                  {{/if}}
+                  <h4 style="font-size: 1rem">{{invoiceFroms}}</h4>
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      gap: 2rem;
+                    "
+                  >
+                    <div style="justify-content: flex-start; width: auto">
+                      <h4 style="font-size: 1rem; margin-bottom: 0">
+                        {{billToHeaders}}
+                      </h4>
+                      <p style="margin: 0; font-size: 1rem">{{billToTexts}}</p>
+                    </div>
+
+                    <div style="justify-content: flex-end">
+                      <h4 style="font-size: 1rem; margin-bottom: 0">
+                        {{shipToHeaders}}
+                      </h4>
+                      <p style="margin: 0; font-size: 1rem">{{shipToTexts}}</p>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <h1 style="font-size: 3rem; font-weight: 400">
+                    {{ invoiceNames }}
+                  </h1>
+                  <h3 style="font-weight: 400">#{{ invoiceNumbers }}</h3>
+                  <br />
+
+                  <div
+                    style="display: grid; gap: 0.25rem; padding-right: 0.8rem"
+                  >
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      {{#if formattedDates}}
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{inputDates}}:
+                      </h4>
+                      <h4 style="margin: 0; width: 10rem">
+                        {{formattedDates}}
+                      </h4>
+                      {{/if}}
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      {{#if paymentTermsTexts}}
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{paymentTerm}}:
+                      </h4>
+                      <h4 style="margin: 0; width: 10rem">
+                        {{paymentTermsTexts}}
+                      </h4>
+                      {{/if}}
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      {{#if formattedDates2}}
+                      <h4 style="font-weight: 400; margin: 0">{{dueDates}}:</h4>
+                      <h4 style="margin: 0; width: 10rem">
+                        {{formattedDates2}}
+                      </h4>
+                      {{/if}}
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      {{#if poNumberTexts}}
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{poNumbers}}:
+                      </h4>
+                      <h4 style="margin: 0; width: 10rem">{{poNumberTexts}}</h4>
+                      {{/if}}
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                        background-color: #eee;
+                        padding: 0.5rem;
+                        border-radius: 0.5rem;
+                        margin-right: -10px;
+                      "
+                    >
+                      <h3 style="margin: 0">{{balanceDueTexts}}:</h3>
+                      <h3 style="margin: 0; width: 10rem">${{balanceDues}}</h3>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr class="heading" style="background-color: #444 !important">
+          <td>{{ HeaderItems }}</td>
+          <td>{{ HeaderQuantities }}</td>
+          <td>{{ HeaderRates }}</td>
+          <td>{{ HeaderAmounts }}</td>
+        </tr>
+
+        {{#each inputss as |input|}}
+        <tr class="item">
+          <td>{{ input.description }}</td>
+          <td>{{ input.quantity }}</td>
+          <td>${{ input.rate }}</td>
+          <td>${{ input.amount }}</td>
+        </tr>
+        {{/each}}
+        <tr class="information">
+          <td colspan="4">
+            <table style="padding-top: 2rem">
+              <tr>
+                <td></td>
+
+                <td>
+                  <div style="display: grid; gap: 0.25rem">
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{subtotalTexts}}:
+                      </h4>
+                      <h4 style="margin: 0; width: 10rem">
+                        ${{subtotalAmounts}}
+                      </h4>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      {{#if discountValues}}
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{#if showDollars}} {{discountTexts}}: {{else}}
+                        {{discountTexts}}({{discountValues}}%): {{/if}}
+                      </h4>
+
+                      <h4 style="margin: 0; width: 10rem">
+                        {{#if showDollars}} ${{discountValues}} {{else}}
+                        ${{discountAmount}} {{/if}}
+                      </h4>
+                      {{/if}}
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      {{#if taxValues}}
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{#if showDollars2}} {{taxTexts}}: {{else}}
+                        {{taxTexts}}({{taxValues}}%): {{/if}}
+                      </h4>
+
+                      <h4 style="margin: 0; width: 10rem">
+                        {{#if showDollars2}} ${{taxValues}} {{else}}
+                        ${{taxAmount}} {{/if}}
+                      </h4>
+                      {{/if}}
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      {{#if shippingValues}}
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{shippingTexts}}:
+                      </h4>
+                      <h4 style="margin: 0; width: 10rem">
+                        ${{shippingValues}}
+                      </h4>
+                      {{/if}}
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{totalTexts}}:
+                      </h4>
+                      <h4 style="margin: 0; width: 10rem">${{totalAmounts}}</h4>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 0.5rem;
+                        justify-content: flex-end;
+                      "
+                    >
+                      {{#if amtPaidValues}}
+                      <h4 style="font-weight: 400; margin: 0">
+                        {{amtPaidTexts}}:
+                      </h4>
+                      <h4 style="margin: 0; width: 10rem">
+                        ${{amtPaidValues}}
+                      </h4>
+                      {{/if}}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <div style="display: grid; gap: 1.5rem">
+              <div>
+                {{#if notes}}
+                <h4 style="font-weight: 400; margin: 0">{{noteTexts}}:</h4>
+                <p style="margin: 0">{{notes}}</p>
+                {{/if}}
+              </div>
+              <div>
+                {{#if termss}}
+                <h4 style="font-weight: 400; margin: 0">{{termsTexts}}:</h4>
+                <p style="margin: 0">{{termss}}</p>
+                {{/if}}
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
