@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { fi } from "date-fns/locale";
 
@@ -102,7 +102,7 @@ export default function Home() {
   const [subtotalAmount, setsubTotalAmount] = useState(0);
   const [balanceDue, setBalanceDue] = useState(0);
 
-  const calculateTotal = () => {
+  const calculateTotal = useCallback(() => {
     const subtotal = inputs.reduce((acc, current) => acc + current.amount, 0);
     let total = subtotal;
 
@@ -122,18 +122,25 @@ export default function Home() {
     }
 
     // Apply amount paid
-
     setsubTotalAmount(subtotal);
     setTotalAmount(total);
 
-    let balance = (total -= amtPaidValue);
+    let balance = total - amtPaidValue;
     setBalanceDue(balance);
-  };
+  }, [
+    inputs,
+    discountValue,
+    taxValue,
+    shippingValue,
+    amtPaidValue,
+    showDollar,
+    showDollar2,
+  ]);
 
-  // Ensure all related states are included in useEffect dependencies
   useEffect(() => {
     calculateTotal();
   }, [
+    calculateTotal, // Now included
     inputs,
     discount,
     tax,
