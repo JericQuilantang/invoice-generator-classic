@@ -33,7 +33,7 @@ import { fi } from "date-fns/locale";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+const Home = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputs, setInputs] = useState([
     { id: 1, description: "", quantity: 1, rate: 0, amount: 0 },
@@ -968,4 +968,5 @@ export default function Home() {
       </Button>
     </main>
   );
-}
+};
+export default Home;

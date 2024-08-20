@@ -2,7 +2,7 @@ import fs from "fs";
 import puppeteer from "puppeteer";
 import handlebars from "handlebars";
 
-export default async (req, res) => {
+const generateInvoicePDF = async (req, res) => {
   try {
     // Ensure req.body exists and contains the expected data
     const { invoiceNumber } = JSON.parse(req.body || "{}");
@@ -168,3 +168,4 @@ export default async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+export default generateInvoicePDF;
